@@ -1,0 +1,17 @@
+# Template of config.yml, omit the `.template` suffix before use.
+blender-path: ""                        # Use blender.exe if there is one.
+paths:
+  addon-folder: "src/fragmentor/assets/addons/"
+  addons:
+    - "PSA-1.81-addon-EN.zip"
+  blend-folder: "src/fragmentor/assets/"     # Assign folder where models are stored.
+  model-folder: "models/"            # Model folder is relative path under blend folder
+  output: "src/fragmentor/outputs/"
+names:
+  model-collection: "model"
+  camera: 'Camera'
+  sun: 'Starlight Sun'
+experiments:
+  name: "demo-experiment"
+  count: 1919
+  seed: 114514

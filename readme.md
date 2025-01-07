@@ -20,7 +20,7 @@ pip install -r requirements.txt
 
 ### 2.2 使用方法
 
-检查素材路径是否正确，素材路径包括模型的 `.blend` 文件夹和背景图片的文件夹。
+检查素材路径是否正确，素材路径包括模型的 `.blend` 文件夹和背景图片的文件夹。我们建议将所有的素材存放在 `fragmentor/assets` 路径下。
 
 在 `config.yml.template` 当中修改配置，并另存为 `config.yml`。可以注意到，配置文件模板有 *json* 版本，如果同时编辑了 *json* 和 *yaml* 会优先搜索 *yaml* 版本的。
 
