@@ -130,7 +130,7 @@ class BlendLoader():
         min_y = 0
         min_z = 0
         for o_target in target_objects:
-            if o_target and o_target.data:
+            if o_target and o_target.type == 'MESH':
                 for v in o_target.data.vertices:
                     co3d = o_target.matrix_world @ v.co
                     max_x = max(co3d.x, max_x)

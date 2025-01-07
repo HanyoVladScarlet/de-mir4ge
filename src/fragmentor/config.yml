@@ -13,5 +13,5 @@ names:
   sun: 'Starlight Sun'
 experiments:
   name: "demo-experiment"
-  count: 1919
+  count: 5000
   seed: 114514
