@@ -25,6 +25,7 @@ class TaskDispatcher():
         # 1. 导入模型
         model_folder = join_paths(self.cfl.get('paths/blend-folder'), self.cfl.get('paths/model-folder'))
         blend_file = self._rdr.get_random_files(model_folder)
+        print(f'Open blend file {blend_file}.')
         if blend_file:
             blend_path = join_paths(model_folder, blend_file)
             self._bll.append_collections(blend_path, 'model')

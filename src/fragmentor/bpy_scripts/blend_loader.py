@@ -59,13 +59,19 @@ class BlendLoader():
         '''
         file_path = os.path.abspath(file_path)
         # print(f'File path is {file_path}')
+        target_col = bpy.data.collections.get(col_name)
+        if target_col:
+            for o in target_col.all_objects:
+                o.select_set(True)
+            bpy.ops.object.delete()
+            mats = [m for m in bpy.data.materials]
+            print(mats)
+            for m in mats:
+                bpy.data.materials.remove(m, do_unlink=True)
         with bpy.data.libraries.load(file_path) as (data_from, data_to):
             if col_name in data_from.collections:
                 # 以下删除原来的target_col集合，防止重命名等异常发生导致意外错误.
                 if col_name in bpy.data.collections.keys():
-                    target_col = bpy.data.collections.get(col_name)
-                    for o in target_col.all_objects():
-                        bpy.data.objects.remove(o, do_unlink=True)
                     bpy.data.collections.remove(target_col, do_unlink=True)
                 # 添加到本工程文件.
                 data_to.collections.append(col_name)
@@ -106,7 +112,7 @@ class BlendLoader():
             sum_z = 0
             cnt = 0
             for o_target in target_objects:
-                if o_target and o_target.data:
+                if o_target and o_target.type == 'MESH':
                     for v in o_target.data.vertices:
                         co3d = o_target.matrix_world @ v.co
                         sum_x += co3d.x
