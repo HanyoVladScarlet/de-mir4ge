@@ -104,7 +104,7 @@ class Randomizor():
         Return single string when count==0.
         '''
         if not os.path.exists(folder):
-            raise Exception(f'Path does not exist.')
+            raise Exception(f'Path `{folder}` does not exist.')
         _filters = []
         if ext_filters:
             _filters = ext_filters

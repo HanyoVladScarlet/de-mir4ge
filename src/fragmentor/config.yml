@@ -6,7 +6,8 @@ paths:
     - "PSA-1.81-addon-EN.zip"
   blend-folder: "src/fragmentor/assets/"     # Assign folder where models are stored.
   model-folder: "models/"            # Model folder is relative path under blend folder
-  output: "src/fragmentor/outputs/"
+  image-output: "src/fragmentor/outputs/"
+  label-output: "src/fragmentor/outputs/"
 names:
   model-collection: "model"
   camera: 'Camera'
@@ -15,3 +16,9 @@ experiments:
   name: "demo-experiment"
   count: 5000
   seed: 114514
+logger:
+  monitor:
+    interval: 1
+  console: 
+    verbose-level: 0
+    max-count: 500

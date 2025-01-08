@@ -65,7 +65,7 @@ class BlendLoader():
                 o.select_set(True)
             bpy.ops.object.delete()
             mats = [m for m in bpy.data.materials]
-            print(mats)
+            # print(mats)
             for m in mats:
                 bpy.data.materials.remove(m, do_unlink=True)
         with bpy.data.libraries.load(file_path) as (data_from, data_to):

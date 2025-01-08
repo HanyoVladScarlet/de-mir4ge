@@ -21,6 +21,6 @@ class Generator():
         return
 
     def generate_one(self, name):
-        self.render_one(self._cfl.get('paths/output') + name + '.png')
+        self.render_one(self._cfl.get('paths/image-output') + name + '.png')
 
         return

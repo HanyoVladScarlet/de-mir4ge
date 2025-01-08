@@ -1,6 +1,7 @@
 import yaml
 import os.path
 
+from utils.logger import log, warn
 from utils.singleton import Singleton 
 
 
@@ -36,6 +37,15 @@ class ConfigLoader():
                 raise Exception(f'Wrong config path with {key}')
             item = item[k]
         return item
+    
+    def contains(self, key):
+        keys = [k for k in key.split('/') if k.strip()]
+        item = self.conf
+        for k in keys:
+            if not k in item:
+                return False
+            item = item[k]
+        return True
 
     def check_loaded(self):
         '''
