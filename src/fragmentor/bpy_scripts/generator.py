@@ -1,16 +1,11 @@
 import bpy
 
 from utils.config_loarder import ConfigLoader
+from utils.singleton import Singleton
+
 
 
 class Generator():
-    instance = None
-    @staticmethod
-    def get_instance():
-        if Generator.instance == None:
-            Generator.instance = Generator()
-        return Generator.instance
-
     def __init__(self):
         self._cfl = ConfigLoader()
 
@@ -21,6 +16,6 @@ class Generator():
         return
 
     def generate_one(self, name):
-        self.render_one(self._cfl.get('paths/image-output') + name + '.png')
-
-        return
+        file_path = self._cfl.get('paths/image-output') + name
+        self.render_one(file_path)
+        return file_path

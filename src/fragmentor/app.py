@@ -14,9 +14,11 @@ class App():
     def run(self):
         info('hello, mir4ge!')
         self.initialize()
-        logger = Logger().append_sink(None)
+        logger = Logger()
+        # logger.append_sink(None)
         self.start_event_loop()
         # LabelDumper().monitor_start()
+        # print(self._cfl.contains('paths/label-output'))
         
 
     def initialize(self):
@@ -42,11 +44,11 @@ class App():
         # print(res)
         tdp = TaskDispatcher()
         start = dt.now()
-        prefix = start.strftime('output_%d-%m-%Y-%H-%M-%S')
+        prefix = start.strftime('output_%Y-%m-%d-%H-%M-%S')
         count = self._cfl.get('experiments/count')
         idx = 0
         for i in range(count):
-            tdp.dispatch_one(f'{prefix}/image/img-{i}')
+            tdp.dispatch_one(prefix)
             info(f'{i + 1} of {count} render finished.')
             info(f'Sum up to {(dt.now() - start).seconds} seconds elapsed.')
             info(self._moniter.output())

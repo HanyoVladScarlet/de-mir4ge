@@ -14,7 +14,7 @@ names:
   sun: 'Starlight Sun'
 experiments:
   name: "demo-experiment"
-  count: 5000
+  count: 20000
   seed: 114514
 logger:
   monitor:

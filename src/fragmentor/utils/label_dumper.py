@@ -13,8 +13,9 @@ from utils.paths import join_paths
 class LabelDumper():
     '''
     '''
-    def __init__(self):
+    def __init__(self, path):
         self._cfl = ConfigLoader()
+        self._path = path
         
     def label_one(self, name, msg):
         base_path = self._cfl.get('paths/label-output') if self._cfl.contains('paths/label-output') else '/de-mir4ge'

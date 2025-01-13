@@ -15,17 +15,17 @@ from utils.singleton import Singleton
 class TaskDispatcher():
     def __init__(self):
         self._bll = BlendLoader()
-        self.cfl = ConfigLoader()
+        self._cfl = ConfigLoader()
         self._rdr = Randomizor()
-        self._ldr = LabelDumper()
+        # self._ldr = LabelDumper()
         self._grr = Generator()
 
-    def dispatch_one(self, name):
+    def dispatch_one(self, base_path):
         '''
         Dispatch and execute one task.
         '''
         # 1. 导入模型
-        model_folder = join_paths(self.cfl.get('paths/blend-folder'), self.cfl.get('paths/model-folder'))
+        model_folder = join_paths(self._cfl.get('paths/blend-folder'), self._cfl.get('paths/model-folder'))
         blend_file = self._rdr.get_random_files(model_folder)
         info(f'Open blend file {blend_file}.')
         if blend_file:
@@ -35,7 +35,8 @@ class TaskDispatcher():
         res = self._rdr.randomize_all()
         # 3. 生成标签（这里是导出参数）
         info(res)
-        # self._ldr.label_one(name, res)
+        # self._ldr.label_one(base_path, res)
         # 4. 开始渲染
-        self._grr.generate_one(name)
+        self._grr.generate_one(base_path)
         # print(f'Task `{name}` is done for execution.')
+        

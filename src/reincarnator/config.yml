@@ -1,0 +1,9 @@
+paths:
+  background: 'src/reincarnator/assets/set_0'
+  foreground: 'src/fragmentor/outputs/output_08-01-2025-08-06-55'
+  output: 'src/reincarnator/outputs/'
+params:
+  boundary-threshold: 32
+  occlusion-threshold: 0.7
+  var-instance-ratio: 0
+  exp-instance-ratio: 1
