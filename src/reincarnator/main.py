@@ -5,10 +5,6 @@ from utils.file_writer import FileWriter
 import json
 import time
 
-FOREGROUND_ROOT = 'C:/Users/hanyo/Documents/Hatuki/Github/de-mirage/src/fragmentor/outputs/output_08-01-2025-08-06-55'
-BACKGROUND_ROOT = 'C:/Users/hanyo/Documents/Hatuki/Github/de-mirage/src/reincarnator/assets/set_0'
-OUTPUT_ROOT = 'C:/Users/hanyo/Documents/Hatuki/Github/de-mirage/src/reincarnator/outputs/'
-
 
 def main():
     name = dt.now().strftime('output_%Y-%m-%d-%H-%M-%S')
@@ -16,8 +12,8 @@ def main():
     fw = FileWriter(name)
     res = []
     start = dt.now()
-    count = 100
-    for i in range(5):
+    count = 10000
+    for i in range(count):
         item = g.grind_one()
         res.append(item)
         info(f'{i + 1} of {count} images accomplish grinding.')
