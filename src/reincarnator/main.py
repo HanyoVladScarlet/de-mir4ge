@@ -13,14 +13,23 @@ def main():
     res = []
     start = dt.now()
     count = 10000
+    interval = 5
+    pointer = 0
     for i in range(count):
         item = g.grind_one()
         res.append(item)
         info(f'{i + 1} of {count} images accomplish grinding.')
-        info(f'Sum up to {(dt.now()-start).seconds} elapsed.')
-    info(res)
-    labels = json.dumps({'labels': res})
-    fw.write_label(labels)
+        info(f'Sum up to {(dt.now()-start).seconds} seconds have elapsed.')
+        pointer += 1
+        if pointer > interval:
+            labels = json.dumps({'labels': res})
+            res = []
+            prefix = fw.write_label(labels)
+            info(f'Label `{prefix}` has been output.')
+            fw.initialize()
+            pointer -= interval
+
+
 
 
 if __name__ == '__main__':

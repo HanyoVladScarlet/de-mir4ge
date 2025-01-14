@@ -48,6 +48,8 @@ class Grinder():
         # 随机读取一张背景图像.
         background_img_name = self.get_one_background()
         background_img = cv2.imread(background_img_name, cv2.IMREAD_UNCHANGED)
+        if len(background_img.shape) < 3:
+            cv2.cvtColor(background_img, cv2.COLOR_GRAY2BGR)
         if background_img.shape[2] == 3:
             alpha = np.ones(shape=(background_img.shape[0], background_img.shape[1], 1), dtype=np.uint8) * 255
             background_img = np.concatenate((background_img, alpha), axis=2)
