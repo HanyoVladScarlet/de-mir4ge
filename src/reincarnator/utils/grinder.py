@@ -18,21 +18,24 @@ class Grinder():
     def __init__(self, name, output_ext='png'):
         self._cfl = ConfigLoader()
         background_root = self._cfl.get('paths/background')
-        foreground_root = self._cfl.get('paths/foreground')
+        foreground_roots = self._cfl.get('paths/foreground')
         self.output_path = os.path.join(self._cfl.get('paths/output'), name, 'images')
         self._output_ext = output_ext
         self._boundary_threshold = self._cfl.get('params/boundary-threshold')
         self._occlusion_threshold = self._cfl.get('params/occlusion-threshold')
         self._background_imgs = []
-        self._foreground_imgs = []
+        self._foreground_imgs = {}
         for root, _, files in os.walk(background_root):
             for file in files:
                 if file.endswith('.png') or file.endswith('.jpg') or file.endswith('.tif'):
                     self._background_imgs.append(os.path.join(root, file))
-        for root, _, files in os.walk(foreground_root):
-            for file in files:
-                if file.endswith('.png') or file.endswith('.jpg') or file.endswith('.tif'): 
-                    self._foreground_imgs.append(os.path.join(root, file))
+        for key in foreground_roots.keys():
+            t_paths = []
+            for root, _, files in os.walk(foreground_roots[key]):
+                for file in files:
+                    if file.endswith('.png') or file.endswith('.jpg') or file.endswith('.tif'): 
+                        t_paths.append(os.path.join(root, file))
+            self._foreground_imgs[key] = t_paths
         if not os.path.exists(self.output_path):
             os.makedirs(self.output_path)
 
@@ -69,8 +72,10 @@ class Grinder():
             o_cnt = 0
             f_name = None
             input = None
+            key = None
             while o_cnt == 0:
-                f_name = self.get_one_foreground()
+                key = self.get_one_foreground_key()
+                f_name = self.get_one_foreground(key)
                 input = cv2.imread(f_name, cv2.IMREAD_UNCHANGED)
                 o_cnt = self.get_pixel_count(input)
                 # 在确认前景不存在零像素的情况下，在第一次循环结束时直接退出.
@@ -80,6 +85,7 @@ class Grinder():
             # 初始化该实例的信息.
             instance_info = {
                 'f_name': f_name,
+                'class': key,
                 'x_min': float('inf'),
                 'y_min': float('inf'),
                 'x_max': float('-inf'),
@@ -270,10 +276,14 @@ class Grinder():
         return res
     
 
-    def get_one_foreground(self):
-        res = random.choice(self._foreground_imgs)
+    def get_one_foreground(self, key):
+        res = random.choice(self._foreground_imgs[key])
         return res        
 
+
+    def get_one_foreground_key(self):
+        res = random.choice(list(self._foreground_imgs.keys()))
+        return res
 
 if __name__ == '__main__':
     background_root = r'C:\Users\hanyo\Desktop\paramization\outputs\dateset_2024-11-11-12-37-16'
