@@ -1,6 +1,7 @@
 import bpy
+import os
 
-from utils.config_loarder import ConfigLoader
+from utils.config_loader import ConfigLoader
 from utils.singleton import Singleton
 
 
@@ -15,7 +16,6 @@ class Generator():
         bpy.data.images['Render Result'].save_render(path)
         return
 
-    def generate_one(self, name):
-        file_path = self._cfl.get('paths/image-output') + name
+    def generate_one(self, file_path):
         self.render_one(file_path)
         return file_path

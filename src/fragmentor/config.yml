@@ -5,13 +5,18 @@ paths:
   addons:
     - "PSA-1.81-addon-EN.zip"
   blend-folder: "src/fragmentor/assets/"     # Assign folder where models are stored.
-  model-folder: "models/"            # Model folder is relative path under blend folder
-  image-output: "src/fragmentor/outputs/"
-  label-output: "src/fragmentor/outputs/"
+  model-folder: "src/fragmentor/assets/models/"            # Model folder is relative path under blend folder
+  foreground:
+    "car": "car"
+    "mid-size-truck": "mid-size-truck"
+    "truck": "truck"
+    "van": "van"
+  output: 'src/fragmentor/outputs/'
 names:
   model-collection: "model"
   camera: 'Camera'
   sun: 'Starlight Sun'
+  bbx3d: 'bounding_box'
 experiments:
   name: "demo-experiment"
   count: 20000

@@ -16,7 +16,7 @@ def join_paths(*paths):
     paths = get_paths(paths)
     res = []
     for path in regulate_paths(paths):
-       res.extend(path.split('/'))
+        res.extend(path.split('/'))
     return '/' if paths[0].startswith('/') else '' + '/'.join(res)
 
 def regulate_paths(*paths):
@@ -25,10 +25,10 @@ def regulate_paths(*paths):
     '''
     paths = get_paths(paths)
     for path in paths:
-       s_path = path.replace('\\', '/')
-       s_path = s_path.replace('￥', '/')
-       yield s_path
-
+        s_path = path.replace('\\', '/')
+        s_path = s_path.replace('￥', '/')
+        yield s_path
+    
 
 def validate_paths(*paths):   
     paths = get_paths(paths)

@@ -2,9 +2,10 @@ import bpy
 import os
 from mathutils import Vector
 
-from utils.config_loarder import ConfigLoader
+from utils.config_loader import ConfigLoader
 from utils.paths import join_paths
 from utils.singleton import Singleton
+from utils.logger import warn
 
 DEFAULT_PATH = 'C:/Users/hanyo/Documents/Hatuki/Github/blender-demo/blends/Mercedes_A-class_5-door_2010.blend'
 ATMOSPHERE_NAME = 'PSA-1.81-addon-EN.zip'
@@ -53,13 +54,17 @@ class BlendLoader():
         # print(bpy.context.preferences.addons['cycles'].preferences. compute_device_type)
         return self
 
-    def append_collections(self, file_path, col_name):
+    def append_collections(self, file_path, col_name, append_axis=True):
         '''
         Append a collection from a blend file.
         '''
         file_path = os.path.abspath(file_path)
         # print(f'File path is {file_path}')
         target_col = bpy.data.collections.get(col_name)
+        axis_name = self._cfl.get('names/bbx3d')
+        axis = bpy.data.objects.get(axis_name)
+        if axis:
+            bpy.data.objects.remove(axis, do_unlink=True)
         if target_col:
             for o in target_col.all_objects:
                 o.select_set(True)
@@ -69,6 +74,10 @@ class BlendLoader():
             for m in mats:
                 bpy.data.materials.remove(m, do_unlink=True)
         with bpy.data.libraries.load(file_path) as (data_from, data_to):
+            if axis_name in data_from.objects:
+                data_to.objects.append(axis_name)
+            else:
+                warn(f'There are no bounding box in file `{file_path}`.')
             if col_name in data_from.collections:
                 # 以下删除原来的target_col集合，防止重命名等异常发生导致意外错误.
                 if col_name in bpy.data.collections.keys():
@@ -76,6 +85,9 @@ class BlendLoader():
                 # 添加到本工程文件.
                 data_to.collections.append(col_name)
         target_col = self.get_collection(col_name)
+        axis = bpy.data.objects.get(axis_name)
+        if axis:
+            bpy.context.scene.collection.objects.link(axis)
         bpy.context.scene.collection.children.link(target_col)
         return self
             
@@ -150,6 +162,22 @@ class BlendLoader():
         Return all objects.
         '''
         return bpy.data.objects
+
+    def get_bounding_box(self):
+        '''
+        Return two vectors representing the bounding box 3d, location and dimensions.
+        '''
+        axis_name = self._cfl.get('names/bbx3d')
+        axis = bpy.data.objects.get(axis_name)
+        if axis:
+            return axis.location, axis.scale
+        warn(f'No bounding box found.')
+        col_name = self._cfl.get('names/model-collection')
+        target_col = self.get_collection(col_name, create_if_null=False)
+        centric_point = self.get_centric_point(target_col.all_objects)
+        dims = self.get_dimensions(target_col.objects)
+        return centric_point, dims
+    
 
 class AssetNotFoundException(BaseException):
     def __init__(self, type, name):

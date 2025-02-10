@@ -1,8 +1,9 @@
-from datetime import datetime as dt
 import tracemalloc
+import time
 
 from bpy_scripts.blend_loader import BlendLoader
-from utils.config_loarder import ConfigLoader
+from utils.config_loader import ConfigLoader
+from utils.file_writer import FileWriter
 from utils.label_dumper import LabelDumper
 from utils.logger import Logger, info
 from utils.singleton import Singleton
@@ -19,13 +20,13 @@ class App():
         self.start_event_loop()
         # LabelDumper().monitor_start()
         # print(self._cfl.contains('paths/label-output'))
-        
+
 
     def initialize(self):
         '''
         Initialize before program starts.
         '''
-        self._moniter = AppMonitor()
+        self._monitor = AppMonitor()
         # 读取参数设置.
         self._cfl = ConfigLoader()
         # 加载默认场景.
@@ -34,24 +35,13 @@ class App():
 
 
     def start_event_loop(self):
-        # if not self.cfl.check_loaded():
-        #     print('Load config before task execution.')
-        #     return
-        # count = self.cfl.get('experiments/count')
-        # res = []
-        # for i in range(count):
-        #     res.append(i)
-        # print(res)
         tdp = TaskDispatcher()
-        start = dt.now()
-        prefix = start.strftime('output_%Y-%m-%d-%H-%M-%S')
         count = self._cfl.get('experiments/count')
         idx = 0
         for i in range(count):
-            tdp.dispatch_one(prefix)
+            tdp.dispatch_one()
             info(f'{i + 1} of {count} render finished.')
-            info(f'Sum up to {(dt.now() - start).seconds} seconds elapsed.')
-            info(self._moniter.output())
+            info(f'Sum up to {time.time() - tdp.get_start_time()} seconds elapsed.')
             idx += 1
             if idx > 10:
                 self._bll = BlendLoader().load_blend_file(self._cfl.get('paths/blend-folder') + '/' + 'main.blend')

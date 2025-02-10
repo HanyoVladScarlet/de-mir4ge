@@ -13,8 +13,8 @@ from mathutils import Vector
 
 from bpy_scripts.blend_loader import BlendLoader, AssetNotFoundException
 from bpy_scripts.scene_setups import SceneSetups
-from utils.config_loarder import ConfigLoader
-from utils.paths import join_paths
+from utils.config_loader import ConfigLoader
+from utils.log_writer import LogWriter
 
 
 class Randomizor():
@@ -25,6 +25,21 @@ class Randomizor():
         self._bll = BlendLoader()
         self._cfl = ConfigLoader()
         self._ssp = SceneSetups()
+        self._models = {}
+        # 
+        model_folder = self._cfl.get('paths/model-folder')
+        foregrounds = self._cfl.get('paths/foreground')
+        for root in foregrounds.keys():
+            self._models[root] = []
+            t_path = os.path.join(model_folder, root)
+            # print(t_path)
+            for r, d, f in os.walk(t_path):
+                # print(f)
+                for m in f:
+                    if m.endswith('.blend'):
+                        self._models[root].append(os.path.join(r, m).replace('\\', '/'))
+        # print(self._models)
+        # print(self._models.keys())
 
 
     def randomize_camera(self):
@@ -61,8 +76,7 @@ class Randomizor():
             raise AssetNotFoundException('collection', col_name)
         
         # 1. 设置摄像机
-        centric_point = self._bll.get_centric_point(target_col.all_objects)
-        dims = self._bll.get_dimensions(target_col.objects)
+        centric_point, dims = self._bll.get_bounding_box()
         width = math.sqrt(dims.x ** 2 + dims.y ** 2  + dims.z ** 2 * 4)
         d_camera = self._bll.get_camera_params(cam_name)
         if not d_camera:
@@ -71,15 +85,17 @@ class Randomizor():
         cam_rot_x = random.random() * math.pi / 2
         cam_rot_z = random.random() * math.pi * 2
         self._ssp.set_camera_look_at(Vector((cam_rot_x, 0, cam_rot_z)), centric_point, distance, cam_name)
-        print(f'The camera is set at {self._bll.get_object(cam_name).location}')
+        cam_loc = self._bll.get_object(cam_name).location
 
         # 2. 设置环境光照
         sun_rot_x = random.random() * math.pi / 2
         sun_rot_z = random.random() * math.pi * 2
         self._ssp.set_lighting(Vector((sun_rot_x, 0, sun_rot_z)), None, None, sun_name)
-
         # 3. 返回标签字典.
         res = {
+            'cam_loc_x': cam_loc.x,
+            'cam_loc_y': cam_loc.y,
+            'cam_loc_z': cam_loc.z,
             'cam_rot_x': cam_rot_x,
             'cam_rot_z': cam_rot_z,
             'cam_distance': distance,
@@ -99,29 +115,14 @@ class Randomizor():
         self._ran.seed(seed)
         return self
 
-    def get_random_files(self, folder, count=0, ext_filter=None, ext_filters=None, no_repeat=False):
+    def get_random_files(self):
         '''
         Return single string when count==0.
         '''
-        if not os.path.exists(folder):
-            raise Exception(f'Path `{folder}` does not exist.')
-        _filters = []
-        if ext_filters:
-            _filters = ext_filters
-        if ext_filter and ext_filter not in _filters:
-            _filters.append(ext_filter)
-
-        f_names = [f for f in os.listdir(folder) if f.split('.')[-1] in _filters] if len(_filters) > 0 else os.listdir(folder)
-        if len(f_names) > 0:
-            # count为零表示返回一个值.
-            if count == 0:
-                return random.choice(f_names)
-            if no_repeat and len(f_names) < count:
-                return f_names
-            return random.choices(f_names, k=count)
-        return
-
-            
+        classification = self._ran.choice(list(self._models.keys()))
+        print(classification)
+        blend_path = self._ran.choice(self._models[classification])
+        return classification, blend_path
 
 
 if __name__ == '__main__':

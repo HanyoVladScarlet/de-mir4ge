@@ -9,7 +9,7 @@ from datetime import datetime as dt
 
 from utils.singleton import Singleton
 from utils.logger import info, log
-from utils.config_loarder import ConfigLoader
+from utils.config_loader import ConfigLoader
 
 
 @Singleton
