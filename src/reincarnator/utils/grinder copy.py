@@ -53,6 +53,18 @@ class Grinder():
         background_img = cv2.imread(background_img_name, cv2.IMREAD_UNCHANGED)
         if len(background_img.shape) < 3:
             background_img = cv2.cvtColor(background_img, cv2.COLOR_GRAY2BGR)
+        # t_width = self._cfl.get('params/target-width')
+        # t_height = self._cfl.get('params/target-height')
+        # width = background_img.shape[0]
+        # height = background_img.shape[1]
+        # ratio = max(t_width / width, t_height / height)
+        # background_img = cv2.resize(background_img, (int(width * ratio), int(height * ratio)))
+        # if t_width < width:
+        #     offset = int(random.random() * (width - t_width))
+        #     background_img = background_img[offset : t_width + offset, :, :]
+        # if t_height < height:
+        #     offset = int(random.random() * (height - t_height))
+        #     background_img = background_img[:, offset : t_height + offset, :]
         if background_img.shape[2] == 3:
             alpha = np.ones(shape=(background_img.shape[0], background_img.shape[1], 1), dtype=np.uint8) * 255
             background_img = np.concatenate((background_img, alpha), axis=2)

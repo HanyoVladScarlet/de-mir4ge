@@ -1,10 +1,14 @@
 paths:
   background: 'src/reincarnator/assets/set_0'
   foreground: 
-    'car': 'src/fragmentor/outputs/output_08-01-2025-08-06-55'
+    'car': 'src/reincarnator/assets/output_2025-02-11-02-09-49/images/car'
   output: 'src/reincarnator/outputs/'
 params:
   boundary-threshold: 32
   occlusion-threshold: 0.7
-  var-instance-ratio: 0
-  exp-instance-ratio: 1
+  instance-count-min: 1
+  instance-count-max: 1
+  target-width: 1024
+  target-height: 1024
+  opaque-max: 1
+  opaque-min: 0.8
