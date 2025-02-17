@@ -1,4 +1,5 @@
-import os.path
+import os
+import json
 from datetime import datetime as dt
 from utils.singleton import Singleton
 from utils.config_loader import ConfigLoader
@@ -25,8 +26,14 @@ class FileWriter():
             f.write(info)
         return self._prefix
 
-    def write_label(self, labels):
-        name = os.path.join(self._label_root, f'labels_{self._prefix}.json')
+    # def write_label(self, labels):
+    #     name = os.path.join(self._label_root, f'labels_{self._prefix}.json')
+    #     with open(name, 'w+') as f:
+    #         f.write(labels)
+    #     return self._prefix
+    
+    def write_label(self, name, content):
+        name = os.path.join(self._label_root, name)
         with open(name, 'w+') as f:
-            f.write(labels)
-        return self._prefix
+            content = json.dumps(content)
+            f.write(content)

@@ -1,14 +1,17 @@
 paths:
-  background: 'src/reincarnator/assets/set_0'
+  background: 
+    'paint': 'src/reincarnator/assets/backgrounds/set_0'
   foreground: 
-    'car': 'src/reincarnator/assets/output_2025-02-11-02-09-49/images/car'
+    'car': 'src/reincarnator/assets/foregrounds/images/car'
   output: 'src/reincarnator/outputs/'
 params:
-  boundary-threshold: 32
-  occlusion-threshold: 0.7
-  instance-count-min: 1
-  instance-count-max: 1
-  target-width: 1024
-  target-height: 1024
-  opaque-max: 1
-  opaque-min: 0.8
+  alpha_max: 1 
+  alpha_min: 0.8
+  boundary_threshold: 32
+  instance_count_min: 1
+  instance_count_max: 1
+  occlusion_threshold: 0.7
+  output_count: 20000
+  size_ratio_upper: 0.618
+  target_width: 1024
+  target_height: 1024

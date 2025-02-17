@@ -8,7 +8,7 @@ from utils.singleton import Singleton
 CONFIG_PATH = 'src/reincarnator/config.yml'
 
 
-@Singleton
+# @Singleton
 class ConfigLoader():
     '''
     Singleton.

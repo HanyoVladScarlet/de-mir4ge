@@ -8,8 +8,8 @@ import signal
 import multiprocessing
 
 
-DEFAULT_INPUT_FOLDER = 'C:/Users/Lyapunov/Documents/Hatuki/Github/de-mirage/src/fragmentor/outputs/output_2025-02-11-02-09-49'
-DEFAULT_OUTPUT_FOLDER = 'C:/Users/Lyapunov/Documents/Hatuki/Github/de-mirage/src/reincarnator/assets/output_2025-02-11-02-09-49'
+DEFAULT_INPUT_FOLDER = r'C:\Users\hanyo\Desktop\outputs\output_2025-02-13-23-51-39'
+DEFAULT_OUTPUT_FOLDER = r'C:\Users\hanyo\Desktop\outputs\foregrounds'
 LOG_NAME = 'labels'
 ALPHA_CUTOFF = True
 OPAQUE_THRESHOLD = 32
