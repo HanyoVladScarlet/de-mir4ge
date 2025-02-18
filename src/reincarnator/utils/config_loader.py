@@ -14,7 +14,7 @@ class ConfigLoader():
     Singleton.
     '''
     def __init__(self):
-        self.conf = {}
+        self._conf = {}
         self._is_loaded = False
         if os.path.exists(CONFIG_PATH):
             self.load_config(CONFIG_PATH)
@@ -25,13 +25,13 @@ class ConfigLoader():
 
         with open(config_path, 'r', encoding='utf-8') as file:
             data = yaml.safe_load(file)
-            self.conf = data
+            self._conf = data
             self._is_loaded = True
             return self
     
     def get(self, key):
         keys = [k for k in key.split('/') if k.strip()]
-        item = self.conf
+        item = self._conf
         for k in keys:
             if not k in item:
                 raise Exception(f'Wrong config path with {key}')
@@ -40,7 +40,7 @@ class ConfigLoader():
     
     def contains(self, key):
         keys = [k for k in key.split('/') if k.strip()]
-        item = self.conf
+        item = self._conf
         for k in keys:
             if not k in item:
                 return False

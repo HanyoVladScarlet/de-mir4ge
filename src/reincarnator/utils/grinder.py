@@ -24,6 +24,7 @@ class Grinder():
         self._output_image_path = os.path.join(output_path, name, 'images')
         self._output_mask_path = os.path.join(output_path, name, 'masks')
         self._output_label_path = os.path.join(output_path, name, 'labels')
+        self._output_config_path = os.path.join(output_path, 'config.json')
         self._alpha_max = self._cfl.get('params/alpha_max')
         self._alpha_min = self._cfl.get('params/alpha_min')
         self._boundary_threshold = self._cfl.get('params/boundary_threshold')
@@ -64,6 +65,8 @@ class Grinder():
 
     def grind(self, multi_proc = True, interval=1):
         ''''''
+        with open(self._output_config_path, 'w+') as f:
+            f.write(json.dumps(self._cfl._conf))
         core_count = multiprocessing.cpu_count() 
         is_exit = False
         for count in range(0, self._output_count, core_count):
@@ -78,10 +81,11 @@ class Grinder():
                 pool.join()
             except KeyboardInterrupt as e:
                 a = 4 / 0
+                print(a)
 
     def grind_one(self, idx):
         info(f'{idx + 1} of {self._output_count} images accomplish grinding.')
-        info(f'Sum up to {(time.time()-self._t_start)} seconds have elapsed.')
+        info(f'Sum up to {(time.time()-self._t_start)} seconds have elapsed.\n')
         res = None
         while res is None:
             try:
