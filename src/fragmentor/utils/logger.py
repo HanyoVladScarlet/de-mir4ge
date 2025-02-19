@@ -1,7 +1,7 @@
+import os
+
 from datetime import datetime as dt
 
-# from utils.config_loarder import ConfigLoader
-from utils.paths import join_paths
 from utils.singleton import Singleton
 
 
@@ -19,13 +19,13 @@ class Logger():
         if 'level' in item and item['level'] <= self._verbose_level:
             return
         if not self._log_file or self._count > self._cfl.get('logger/console/max-count'):
-            name = join_paths(self._name, dt.now().strftime('%Y-%m-%d-%H-%M-%S'))
+            name = os.path.join(self._name, dt.now().strftime('%Y-%m-%d-%H-%M-%S'))
             self._open_log(name)
         
     def _open_log(self, name):
         if self._log_file:
             self._log_file.close()
-        path = join_paths(self._cfl.get('paths/log-output'), name + '.log')
+        path = os.path.join(self._cfl.get('paths/log-output'), name + '.log')
         self._log_file = open(path)
         return self
     

@@ -8,10 +8,14 @@ paths:
   model-folder: "src/fragmentor/assets/models/"            # Model folder is relative path under blend folder
   foreground:
     "car": "car"
-    "mid-size-truck": "mid-size-truck"
-    "truck": "truck"
-    "van": "van"
+    # "mid-size-truck": "mid-size-truck"
+    # "truck": "truck"
+    # "van": "van"
   output: 'src/fragmentor/outputs/'
+params:
+  cam:
+    rotx_max: 90
+    rotx_min: 75
 names:
   model-collection: "model"
   camera: 'Camera'
@@ -19,7 +23,7 @@ names:
   bbx3d: 'bounding_box'
 experiments:
   name: "demo-experiment"
-  count: 20000
+  count: 50
   seed: 114514
 logger:
   monitor:

@@ -6,7 +6,7 @@ from mathutils import Vector
 
 MODEL_COL_NAME = 'model'
 BBX_NAME = 'bounding_box'
-ROOT_FOLDER = 'C:/Users/Lyapunov/Documents/Hatuki/Github/de-mirage/src/fragmentor/assets/models'
+ROOT_FOLDER = 'C:/Users/hanyo/Documents/Hatuki/Github/de-mirage/src/fragmentor/assets/models'
 
 
 def batch_create_bbx(root_folder = ROOT_FOLDER):

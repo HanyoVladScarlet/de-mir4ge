@@ -2,7 +2,7 @@ import os
 import sys
 
 
-ROOT_PATH = 'C:/Users/Lyapunov/Documents/Hatuki/Github/de-mirage/src/fragmentor/assets/models'
+ROOT_PATH = 'C:/Users/hanyo/Documents/Hatuki/Github/de-mirage/src/fragmentor/assets/models'
 
 
 def clean_up_blend1s(root_path = ROOT_PATH):

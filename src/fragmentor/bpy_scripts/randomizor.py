@@ -14,7 +14,6 @@ from mathutils import Vector
 from bpy_scripts.blend_loader import BlendLoader, AssetNotFoundException
 from bpy_scripts.scene_setups import SceneSetups
 from utils.config_loader import ConfigLoader
-from utils.log_writer import LogWriter
 
 
 class Randomizor():
@@ -25,6 +24,8 @@ class Randomizor():
         self._bll = BlendLoader()
         self._cfl = ConfigLoader()
         self._ssp = SceneSetups()
+        self._rotx_min = self._cfl.get('params/cam/rotx_min')
+        self._rotx_max = self._cfl.get('params/cam/rotx_max')
         self._models = {}
         # 
         model_folder = self._cfl.get('paths/model-folder')
@@ -82,7 +83,7 @@ class Randomizor():
         if not d_camera:
             raise AssetNotFoundException('camera', cam_name)
         distance = width * d_camera.lens / d_camera.sensor_width
-        cam_rot_x = random.random() * math.pi / 2
+        cam_rot_x = (random.random() * (self._rotx_max - self._rotx_min) + self._rotx_min) * math.pi / 180
         cam_rot_z = random.random() * math.pi * 2
         self._ssp.set_camera_look_at(Vector((cam_rot_x, 0, cam_rot_z)), centric_point, distance, cam_name)
         cam_loc = self._bll.get_object(cam_name).location

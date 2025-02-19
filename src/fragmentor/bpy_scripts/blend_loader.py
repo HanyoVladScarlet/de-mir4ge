@@ -3,7 +3,6 @@ import os
 from mathutils import Vector
 
 from utils.config_loader import ConfigLoader
-from utils.paths import join_paths
 from utils.singleton import Singleton
 from utils.logger import warn
 
@@ -28,7 +27,7 @@ class BlendLoader():
         # PSA
         t_addon = bpy.context.preferences.addons.get('physical-starlight-atmosphere')
         if t_addon is None:
-            file_path = join_paths(self._cfl.get('paths/addon-folder'), ATMOSPHERE_NAME)
+            file_path = os.path.join(self._cfl.get('paths/addon-folder'), ATMOSPHERE_NAME)
             bpy.ops.preferences.addon_install(filepath=file_path)
             bpy.ops.preferences.addon_enable(module='physical-starlight-atmosphere')
             bpy.ops.wm.save_userpref()
