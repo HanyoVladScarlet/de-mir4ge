@@ -13,10 +13,12 @@ DEFAULT_OUTPUT_FOLDER = r'C:\Users\hanyo\Desktop\outputs\foregrounds'
 LOG_NAME = 'labels'
 ALPHA_CUTOFF = True
 OPAQUE_THRESHOLD = 32
+BLACK_LIST = ['src/fragmentor/assets/models/car/Mercedes_Benz_Actros_2015.blend', 'src/fragmentor/assets/models/car/Mercedes-Benz_300_(W108)_SEL_AMG_Red_Pig_1969.blend', 'src/fragmentor/assets/models/car/Mercedes-Benz_CapaCity_L_4door_Bus_HQinterior_2014.blend', 'src/fragmentor/assets/models/car/Toyota Yaris Hatchback US 2020.blend']
 
 def main():
     alpha_cutoff = ALPHA_CUTOFF
     input_path = DEFAULT_INPUT_FOLDER
+    blacklist_ = BLACK_LIST
     if len(sys.argv) > 1:
         input_path = sys.argv[1]
     if not os.path.exists(input_path):
@@ -30,47 +32,50 @@ def main():
     for i in sys.argv:
         if i == '-a':
             alpha_cutoff = True
-    cvt = Convertor(input_path, output_path, alpha_cutoff)
+    cvt = Convertor(input_path, output_path, alpha_cutoff, blacklist_)
     cvt.convert()
     print('hao')
 
 
 class Convertor():
-    def __init__(self, source, destination, alpha_off):
+    def __init__(self, source, destination, alpha_off, blacklist_):
+        self._t_start = time.time()
         self._source = source
         self._destination = destination
         self._alpha_cutoff = alpha_off
-        self._t_start = 0
-        self._idx = 0
-        self._total = 0
-        self._lock = multiprocessing.Manager().Lock()
-
-
-    def convert(self):
-        log_files = []
+        self._blacklist_ = blacklist_
+        self._log_files = []
         for r, d, f in os.walk(self._source):
             for file in f:
                 # print(r, file)
                 if file.endswith('.json'):
-                    log_files.append(os.path.join(r, file).replace('\\', '/'))
-        self._total = len(log_files)
-        self._idx = 0
-        self._t_start = time.time()
-        try:
-            pool = multiprocessing.Pool()
-            results = pool.map(self.convert_one, log_files)
-            pool.close()
-            pool.join() 
-        except KeyboardInterrupt as e:
-            raise e
+                    self._log_files.append(os.path.join(r, file).replace('\\', '/'))
+        self._total = len(self._log_files)
+
+
+
+
+    def convert(self):
+        core_count = multiprocessing.cpu_count()
+        for count in range(0, self._total, core_count):
+            try:
+                pool = multiprocessing.Pool()
+                pool.map(self.convert_one, [i for i in range(count, count + core_count)])
+                pool.close()
+                pool.join()
+            except Exception as e:
+                print(e)
         return
 
 
-    def convert_one(self, file):
+    def convert_one(self, idx):
         res = None
-        with open(file, 'r') as f:
+        with open(self._log_files[idx], 'r') as f:
             s_json = f.read()
         o_json = json.loads(s_json)
+        model_path = o_json['model-path']
+        if model_path is None:
+            return
         # shutil.copy2
         # print(f'{idx} of {total} has been output at `{output_path}`.')
         # print(f'{idx} of {total} has been output at `{log_path}`.')
@@ -94,10 +99,8 @@ class Convertor():
         output_path = os.path.join(output_path, o_json['name'] + '.json')
         with open(output_path, 'w+') as f:
             f.write(res)
-        with self._lock:
-            self._idx += 1
         time.sleep(random.random() * 0.8 + 0.2)
-        print(f'{self._idx} of {self._total} images have been accomplished within {time.time() - self._t_start} seconds.\n')
+        print(f'{idx} of {self._total} images have been accomplished within {time.time() - self._t_start} seconds.\n')
         return
 
 

@@ -23,7 +23,7 @@ names:
   bbx3d: 'bounding_box'
 experiments:
   name: "demo-experiment"
-  count: 50
+  count: 20000
   seed: 114514
 logger:
   monitor:
