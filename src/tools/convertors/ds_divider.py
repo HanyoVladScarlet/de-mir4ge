@@ -83,7 +83,7 @@ class DataCarrier():
         p_to = os.path.join(p_to_folder, self._p_labels[idx])
         shutil.copy(p_from, p_to)
         t_now = time.time()
-        print(f'{idx + 1} of {self._count_upper_test} item accomplish carrying in {t_start - t_now}.')
+        print(f'{idx + 1} of {self._count_upper_test} item accomplish carrying in {t_now - t_start}.')
         print(f'Sum up to {(t_now - self._t_start)} seconds have elapsed.\n')
 
 if __name__ == '__main__':

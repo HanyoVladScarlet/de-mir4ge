@@ -8,7 +8,7 @@ import yaml
 from datetime import datetime as dt
 
 
-P_FROM = r'C:\Users\hanyo\Documents\Hatuki\Github\de-mirage\src\reincarnator\outputs\output_2025-02-18-00-29-53'
+P_FROM = r'C:\Users\hanyo\Documents\Hatuki\Github\de-mirage\src\reincarnator\outputs\output_2025-02-22-00-04-10'
 P_TO = r'C:\Users\hanyo\Desktop\yolo-data'
 NAME = 'yolo-data'
 
@@ -53,7 +53,7 @@ class DataStructor():
     def to_yolo(self, mul_proc=True):
         with open(self._p_cls_info, 'w+') as f:
             s_yml = yaml.dump({
-                'nc': self._output_count,
+                'nc': len(self._cls_dict.keys()),
                 'names': list(self._cls_dict.keys()),
                 'train': '',
                 'val': '',
@@ -81,6 +81,8 @@ class DataStructor():
         t_start = time.time()
         f_label = self._f_labels[idx]
         label = self.parse_one(f_label)
+        if label is None:
+            return
         labels = []
         for ins in label['ins_arr']:
             ins_width = (ins['x_max'] - ins['x_min']) / self._t_width
@@ -106,7 +108,9 @@ class DataStructor():
         with open(p_label, 'r') as f:
             res = json.loads(f.read())
         p_image = os.path.join(self._p_images, res['name'] + '.png')
-        p_from_image = os.path.join(self._p_from_images, res['name'] + '.png')               
+        p_from_image = os.path.join(self._p_from_images, res['name'] + '.png')     
+        if not os.path.exists(p_from_image):
+            return
         shutil.copy(p_from_image, p_image)
         return res 
 

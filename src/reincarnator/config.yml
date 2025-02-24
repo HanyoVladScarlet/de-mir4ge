@@ -5,13 +5,13 @@ paths:
     'car': 'src/reincarnator/assets/foregrounds/images/car'
   output: 'src/reincarnator/outputs/'
 params:
-  alpha_max: 1 
-  alpha_min: 0.8
-  boundary_threshold: 32
+  alpha_max: 0.9 
+  alpha_min: 0.55
+  boundary_threshold: 48
   instance_count_min: 1
-  instance_count_max: 1
+  instance_count_max: 5
   occlusion_threshold: 0.7
   output_count: 20000
   size_ratio_upper: 0.618
-  target_width: 1024
-  target_height: 1024
+  target_width: 640
+  target_height: 640

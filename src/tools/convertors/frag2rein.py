@@ -4,11 +4,12 @@ import json
 import time
 import cv2
 import random
-import signal
 import multiprocessing
 
+from datetime import datetime as dt
 
-DEFAULT_INPUT_FOLDER = r'C:\Users\hanyo\Desktop\outputs\output_2025-02-13-23-51-39'
+
+DEFAULT_INPUT_FOLDER = r'C:\Users\hanyo\Desktop\cache\output_2025-02-19-17-54-18'
 DEFAULT_OUTPUT_FOLDER = r'C:\Users\hanyo\Desktop\outputs\foregrounds'
 LOG_NAME = 'labels'
 ALPHA_CUTOFF = True
@@ -34,8 +35,7 @@ def main():
             alpha_cutoff = True
     cvt = Convertor(input_path, output_path, alpha_cutoff, blacklist_)
     cvt.convert()
-    print('hao')
-
+    
 
 class Convertor():
     def __init__(self, source, destination, alpha_off, blacklist_):
@@ -47,12 +47,9 @@ class Convertor():
         self._log_files = []
         for r, d, f in os.walk(self._source):
             for file in f:
-                # print(r, file)
                 if file.endswith('.json'):
                     self._log_files.append(os.path.join(r, file).replace('\\', '/'))
         self._total = len(self._log_files)
-
-
 
 
     def convert(self):
@@ -69,6 +66,7 @@ class Convertor():
 
 
     def convert_one(self, idx):
+        t_start = time.time()
         res = None
         with open(self._log_files[idx], 'r') as f:
             s_json = f.read()
@@ -76,9 +74,6 @@ class Convertor():
         model_path = o_json['model-path']
         if model_path is None:
             return
-        # shutil.copy2
-        # print(f'{idx} of {total} has been output at `{output_path}`.')
-        # print(f'{idx} of {total} has been output at `{log_path}`.')
         s_image = os.path.join(self._source, 'images', o_json['name'] + '.png')
         d_image = os.path.join(self._destination, 'images', o_json['cls'])
         if not os.path.exists(d_image):
@@ -99,8 +94,8 @@ class Convertor():
         output_path = os.path.join(output_path, o_json['name'] + '.json')
         with open(output_path, 'w+') as f:
             f.write(res)
-        time.sleep(random.random() * 0.8 + 0.2)
-        print(f'{idx} of {self._total} images have been accomplished within {time.time() - self._t_start} seconds.\n')
+        # time.sleep(random.random() * 0.8 + 0.2)
+        print(f'{idx} of {self._total} images have been exported into {output_path} within {time.time() - t_start} seconds.\nSum up to {time.time() - self._t_start} seconds elapsed.\n')
         return
 
 
@@ -139,7 +134,7 @@ class Convertor():
                 output = output[x_min:x_max+1, y_min:y_max+1]
             cv2.imwrite(destination, output, [cv2.IMWRITE_PNG_COMPRESSION, 0])
             if alpha_cutoff:
-                print(f'Image `{source}` has been alpha cut-off to `    {destination}`.')  
+                print(f'Image `{source}` has been alpha cut-off to` {destination}`.')  
                 return opaque_count
             print(f'Image `{source}` has been copied to `{destination}`.')  
 
