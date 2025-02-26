@@ -9,9 +9,12 @@ params:
   alpha_min: 0.55
   boundary_threshold: 48
   instance_count_min: 1
-  instance_count_max: 5
+  instance_count_max: 1
   occlusion_threshold: 0.7
   output_count: 20000
   size_ratio_upper: 0.618
   target_width: 640
   target_height: 640
+  pos_x: 480
+  pos_y: 480
+  pos_r: 0

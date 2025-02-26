@@ -8,7 +8,7 @@ import yaml
 from datetime import datetime as dt
 
 
-P_FROM = r'C:\Users\hanyo\Documents\Hatuki\Github\de-mirage\src\reincarnator\outputs\output_2025-02-22-00-04-10'
+P_FROM = r'C:\Users\hanyo\Documents\Hatuki\Github\de-mirage\src\reincarnator\outputs\output_2025-02-26-16-30-04'
 P_TO = r'C:\Users\hanyo\Desktop\yolo-data'
 NAME = 'yolo-data'
 

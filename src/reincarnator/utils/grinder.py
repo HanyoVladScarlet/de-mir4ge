@@ -1,6 +1,8 @@
 import json
+import math
 import os
 import random
+import scipy.stats as sta
 import time
 import multiprocessing
 
@@ -11,6 +13,8 @@ from PIL import Image
 from utils.config_loader import ConfigLoader
 from utils.logger import info
 
+
+MAX_INSTANCE_DISTANCES_COUNTER = 1000
 
 # @Singleton
 class Grinder():
@@ -32,6 +36,9 @@ class Grinder():
         self._instance_count_min = self._cfl.get('params/instance_count_min')
         self._occlusion_threshold = self._cfl.get('params/occlusion_threshold')
         self._output_count = self._cfl.get('params/output_count')
+        self._pos_x = self._cfl.get('params/pos_x')
+        self._pos_y = self._cfl.get('params/pos_y')
+        self._pos_r = self._cfl.get('params/pos_r')
         # instance占据background_img最大的比例 (取比例更大的边为准).
         self._size_ratio_upper = self._cfl.get('params/size_ratio_upper')
         self._target_width = self._cfl.get('params/target_width')
@@ -40,6 +47,10 @@ class Grinder():
         self._t_start = time.time()
         self._background_imgs = {}
         self._foreground_imgs = {}
+        # 用于散布instance，每个实例距离散布中心的距离，配合均匀分布的角度确定实际位置
+        # self._instance_pos_x = []
+        # self._instance_pos_y = []
+        # self._instance_distances_counter = MAX_INSTANCE_DISTANCES_COUNTER
         for key in background_roots.keys():
             t_paths = []
             for root, _, files in os.walk(background_roots[key]):
@@ -130,9 +141,10 @@ class Grinder():
                 instance = Image.open(foreground)
                 ins_width, ins_height = instance.size
                 ratio = self._size_ratio_upper - random.random() * (self._size_ratio_upper - max(self._boundary_threshold / bgi_height, self._boundary_threshold /  bgi_width))
-                instance = instance.resize((int(ins_width * ratio), int(ins_height * ratio)))
-                offset_width = int(random.random() * (1 - ratio) * ins_width)
-                offset_height = int(random.random() * (1 - ratio) * ins_height)
+                ins_width = int(ins_width * ratio)
+                ins_height = int(ins_height * ratio)
+                instance = instance.resize((ins_width, ins_height))
+                offset_width, offset_height = self.get_instance_offset(ins_width, ins_height)
                 ins_width, ins_height = instance.size
                 # 调整instance的alpha通道. 
                 alpha_map = instance.split()[-1]
@@ -145,7 +157,7 @@ class Grinder():
                 # 计算mask对应的r_value.
                 r_value = 255 // count * (i + 1) 
                 ins_mask = Image.new('RGBA', instance.size, (r_value, 0, 0, 0))
-                ins_mask.putalpha(alpha_map)
+                ins_mask.putalpha(alpha_map) 
                 o_cnt = 1
                 for i in range(ins_mask.width):
                     for j in range(ins_mask.height):
@@ -221,6 +233,27 @@ class Grinder():
         res = res.crop(box) 
         res = res.convert('RGBA')
         return res
+    
+    def get_instance_offset(self, ins_width, ins_height):
+        min_v = max(0, self._pos_x - self._pos_r)
+        max_v = min(self._target_width - ins_width, self._pos_x + self._pos_r)
+        res_x = int(min_v + random.random() * (max_v - min_v))
+        min_v = max(0, self._pos_y - self._pos_r)
+        max_v = min(self._target_height - ins_height, self._pos_y + self._pos_r)
+        res_y = int(min_v + random.random() * (max_v - min_v))
+        return res_x, res_y
+
+
+    # def get_position(self):
+    #     self._instance_distances_counter += 1
+    #     if self._instance_distances_counter >= MAX_INSTANCE_DISTANCES_COUNTER:
+    #         a, b = (0 - self._pos_x) / self._pos_r, (self._target_width - self._pos_x) / self._pos_r
+    #         self._instance_pos_x = sta.truncnorm(a, b, loc=self._pos_x, scale=self._pos_r).rvs(MAX_INSTANCE_DISTANCES_COUNTER)
+    #         a, b = (0 - self._pos_y) / self._pos_r, (self._target_height - self._pos_y) / self._pos_r
+    #         self._instance_pos_y = sta.truncnorm(a, b, loc=self._pos_y, scale=self._pos_r).rvs(MAX_INSTANCE_DISTANCES_COUNTER)
+    #         # Generate the truncated normal distribution
+    #         self._instance_distances_counter = 0
+    #     return (self._instance_pos_x[self._instance_distances_counter], self._instance_pos_y[self._instance_distances_counter])
 
 
 if __name__ == '__main__':
